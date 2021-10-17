@@ -1,0 +1,13 @@
+clearml==1.1.1
+albumentations==1.0.2
+numpy==1.19.1
+pydantic==1.7.4
+torch==1.9.0
+opencv_python_headless==4.5.2.54
+timm==0.4.12
+tqdm==4.61.1
+pandas==1.2.5
+PyYAML==6.0
+scikit_learn==1.0
+jupyter-client==6.1.12
+jupyter-core==4.7.1

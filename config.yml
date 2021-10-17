@@ -1,0 +1,155 @@
+# Конфигурации путей для проекта.
+path:
+
+  # Путь до исходного .csv файла, содержащего пути до изображений и метки цвета и длины хвоста.
+  csv: ../data/train.csv
+
+  # Путь до папки, в которую будут сохраняться веса обученной сети.
+  weights_folder: ./outputs
+
+# Конфигурация для системы логгирования экспериментов.
+clearml:
+
+  # Имя проекта.
+  project_name: 'pets-ld'
+
+  # Номер текущего эксперимента.
+  experiment_number: 9
+
+# Конфигурация процедуры тренировки модели.
+training:
+
+  # Зерно ГСЧ.
+  seed: 39
+
+  # Количество эпох тренировки.
+  epochs: 15
+
+  # Аппаратный ускоритель, на котором будет производиться тренировка.
+  device: 'cuda:0'
+
+  # Число процессов для загрузки данных.
+  num_workers: 4
+
+  # Объем пакета данных.
+  batch_size: 32
+
+  # Коэффициент для скользяшего среднего по весам модели. 
+  # Установите 0, если не хотите использовать.
+  ema: 0
+
+  compose_loss_coeff: 0.6
+  
+# DL model configuration.
+model:
+
+  # Имя архитектуры модели.
+  name: tf_efficientnet_b0_ns
+  
+  # Использовать ли веса сети, предобученной на ImageNet'e.
+  pretrained: true
+
+  # Использовать ли заморозку весов каркаса сети.
+  freeze: false
+  
+  # Имя файла с весами сети.
+  file_name: color_and_tail_model.pth
+  
+  # Параметры для классификаторной головы по окрасу шерсти.
+  color_dropout_rate: 0.5
+  color_num_features: 1024
+
+  # Параметры для классификаторной головы по длине хвоста.  
+  tail_dropout_rate: 0.5
+  tail_num_features: 1024
+
+# Конфигурация алгоритма оптимизации. 
+optimizer:
+  algo: torch.optim.Adam
+  lr: 0.001
+  weight_decay: 0.00005
+
+# Конфигурация планировщика шага обучения.
+scheduler:
+  algo: torch.optim.lr_scheduler.StepLR
+  step_size: 6
+  gamma: 0.5
+
+# Конфигурация функции потерь для цвета шерсти.
+color_criterion:
+  algo: torch.nn.CrossEntropyLoss
+  
+# Конфигурация функции потерь для длины хвоста.
+tail_criterion:
+  algo: torch.nn.BCEWithLogitsLoss
+
+# Трансформации для аугментации данных.
+augmentations:
+  train:
+    transform:
+      __class_fullname__: albumentations.core.composition.Compose
+      bbox_params: null
+      keypoint_params: null
+      p: 1
+      transforms:
+        - __class_fullname__: albumentations.augmentations.geometric.resize.LongestMaxSize
+          always_apply: true
+          max_size: 224
+        - __class_fullname__: albumentations.augmentations.transforms.PadIfNeeded
+          always_apply: true
+          min_height: 224
+          min_width: 224
+        - __class_fullname__: albumentations.augmentations.transforms.HorizontalFlip
+          p: 0.5
+        - __class_fullname__: albumentations.augmentations.transforms.CoarseDropout
+          max_holes: 5
+          max_width: 22
+          min_width: 22
+          max_height: 22
+          min_height: 22
+        - __class_fullname__: albumentations.augmentations.transforms.Normalize
+          always_apply: true
+          max_pixel_value: 255.0
+          mean:
+            - 0.485
+            - 0.456
+            - 0.406
+          p: 1
+          std:
+            - 0.229
+            - 0.224
+            - 0.225
+        - __class_fullname__: albumentations.pytorch.transforms.ToTensorV2
+          transpose_mask: false
+          always_apply: true
+          p: 1
+  val:
+    transform:
+      __class_fullname__: albumentations.core.composition.Compose
+      bbox_params: null
+      keypoint_params: null
+      p: 1
+      transforms:
+        - __class_fullname__: albumentations.augmentations.geometric.resize.LongestMaxSize
+          always_apply: true
+          max_size: 224
+        - __class_fullname__: albumentations.augmentations.transforms.PadIfNeeded
+          always_apply: true
+          min_height: 224
+          min_width: 224
+        - __class_fullname__: albumentations.augmentations.transforms.Normalize
+          always_apply: true
+          max_pixel_value: 255.0
+          mean:
+            - 0.485
+            - 0.456
+            - 0.406
+          p: 1
+          std:
+            - 0.229
+            - 0.224
+            - 0.225
+        - __class_fullname__: albumentations.pytorch.transforms.ToTensorV2
+          transpose_mask: false
+          always_apply: true
+          p: 1
