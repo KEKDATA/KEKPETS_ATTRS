@@ -11,10 +11,10 @@ path:
 clearml:
 
   # Имя проекта.
-  project_name: 'pets-color'
+  project_name: 'pets-tail'
 
   # Номер текущего эксперимента.
-  experiment_number: 6
+  experiment_number: 10
 
 # Конфигурация процедуры тренировки модели.
 training:
@@ -36,18 +36,15 @@ training:
 
   # Коэффициент для скользяшего среднего по весам модели. 
   # Установите 0, если не хотите использовать.
-  ema: 0.0
+  ema: 0.8
 
-  # Имя столбца в .csv файле, который содержит метки для решаемой задачи.
-  # Для задачи классификации хвоста: long_tail
-  # Для задачи классификации окраса шерсти: color
-  target_column_name: color
+  target_column_name: long_tail
   
 # DL model configuration.
 model:
 
   # Количество классов в задаче классификации.
-  num_classes: 4
+  num_classes: 1
 
   # Имя архитектуры модели.
   name: tf_efficientnet_b0_ns
@@ -59,10 +56,10 @@ model:
   freeze: false
   
   # Имя файла с весами сети.
-  file_name: color_model.pth
+  file_name: tail_model.pth
   
   # Параметры для классификаторной головы.
-  dropout_rate: 0.5
+  dropout_rate: 0.2
   num_features: null
 
 # Конфигурация алгоритма оптимизации. 
@@ -74,12 +71,12 @@ optimizer:
 # Конфигурация планировщика шага обучения.
 scheduler:
   algo: torch.optim.lr_scheduler.StepLR
-  step_size: 6
+  step_size: 100
   gamma: 0.5
 
 # Конфигурация функции.
 criterion:
-  algo: torch.nn.CrossEntropyLoss
+  algo: torch.nn.BCEWithLogitsLoss
 
 # Трансформации для аугментации данных.
 augmentations:

@@ -10,7 +10,7 @@ from torch.utils.data import Dataset
 
 
 # Тип точки данных, возвращаемый набором данных.
-DataPoint = tp.Tuple[tp.Union[torch.Tensor, np.ndarray], int, int]
+DataPoint = tp.Tuple[tp.Union[torch.Tensor, np.ndarray], int]
 
 
 class AnimalDataset(Dataset):
@@ -19,15 +19,18 @@ class AnimalDataset(Dataset):
     def __init__(
         self, 
         dataframe: pd.DataFrame,
+        target_column_name: str,
         transform: tp.Optional[album.Compose] = None,
     ) -> None:
         """
         Параметры:
             dataframe: Исходный дата-фрейм с метками и путями до картинок;
+            target_column_name: Имя столбца с метками класса;
             transform: Трансформации для аугментации изображений.
         """
         self.data = dataframe.copy()
         self.transform = transform
+        self.target = target_column_name
         
     def __len__(self) -> int:
         """Посчитать длину набора данных."""
@@ -45,8 +48,8 @@ class AnimalDataset(Dataset):
         """
         data_point = self.data.iloc[index]
         image = cv2.imread(data_point['image'])
-        color = data_point['color']
-        tail_class = data_point['long_tail']
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        label = data_point[self.target]
         if self.transform:
             image = self.transform(image=image)['image']
-        return image, color, tail_class
+        return image, label

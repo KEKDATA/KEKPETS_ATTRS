@@ -67,7 +67,7 @@ if __name__ == '__main__':
         opset_version=11,
         do_constant_folding=True,
         input_names=['input'],
-        output_names=['color', 'tail']
+        output_names=['output']
     )
     onnx_model = onnx.load(args.output_model_path)
     onnx.checker.check_model(onnx_model)

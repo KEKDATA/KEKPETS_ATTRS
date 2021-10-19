@@ -27,20 +27,19 @@ class TrainingConfig(BaseModel):
     num_workers: int
     batch_size: int
     ema: float
-    compose_loss_coeff: float
+    target_column_name: str
 
 
 class ModelConfig(BaseModel):
     """Хранит в себе настройки нейронной сети."""
 
+    num_classes: int
     name: str
     pretrained: bool
     freeze: bool
     file_name: tp.Optional[str]
-    color_dropout_rate: tp.Optional[float]
-    color_num_features: tp.Optional[int]
-    tail_num_features: tp.Optional[int]
-    tail_dropout_rate: tp.Optional[float]
+    dropout_rate: tp.Optional[float]
+    num_features: tp.Optional[int]
 
 
 class Config(BaseModel):
@@ -52,16 +51,14 @@ class Config(BaseModel):
     clearml: ClearMLConfig
     optimizer: tp.Any
     scheduler: tp.Any
-    color_criterion: tp.Any
-    tail_criterion: tp.Any
+    criterion: tp.Any
     augmentations: tp.Any
 
     @validator(
         'optimizer', 
         'scheduler', 
-        'color_criterion', 
-        'augmentations', 
-        'tail_criterion'
+        'criterion', 
+        'augmentations',
     )
     def build(
         cls,                    # noqa: N805

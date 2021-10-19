@@ -57,7 +57,9 @@ def build_dataloaders(
         Загрузчики данных для тренировочной и валидационной процедур.
     """
     train_df, val_df = dataframes
-    train_dataset = AnimalDataset(train_df, transforms['train'])
+    train_dataset = AnimalDataset(
+        train_df, config.training.target_column_name, transforms['train']
+    )
     sampler = None
     shuffle = True
     train_dataloader = DataLoader(
@@ -69,7 +71,9 @@ def build_dataloaders(
         num_workers=config.training.num_workers,
         worker_init_fn=worker_init_fn
     )
-    val_dataset = AnimalDataset(val_df, transforms['val'])
+    val_dataset = AnimalDataset(
+        val_df, config.training.target_column_name, transforms['val']
+    )
     val_dataloader = DataLoader(
         val_dataset, 
         2 * config.training.batch_size,
