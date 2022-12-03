@@ -9,7 +9,8 @@ onnx_simplifier==0.3.6
 opencv_python_headless==4.5.3.56
 timm==0.4.12
 onnxoptimizer==0.2.6
-torch==1.9.0
+torch
+torchvision
 PyYAML==6.0
 scikit_learn==1.0
 jupyter-client==6.1.12
